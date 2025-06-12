@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
         }
     );
 
-    // ************************** 세션이 없어서 로그인 페이지로 리다이렉션함
+    //  세션이 없어서 로그인 페이지로 리다이렉션함
     if (!session) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -24,5 +24,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/dashboard'], // *********************** 보안되어야 할 페이지를 설정(세션 체크할 페이지)
+    matcher: ['/dashboard'], //  보안되어야 할 페이지를 설정(세션 체크할 페이지)
 };

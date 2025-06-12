@@ -1,6 +1,8 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { db } from './prisma';
+import { nextCookies } from 'better-auth/next-js'; //  nextCookies 가져옴
+import { sendEmail } from './email'; // ************************* 이메일 전송 로직 함수 가져옴
 
 export const auth = betterAuth({
     database: prismaAdapter(db, {
@@ -11,6 +13,15 @@ export const auth = betterAuth({
         minPasswordLength: 8, // 최소 자리수
         maxPasswordLength: 128, // 최대 자리수
         autoSignIn: true, // 자동 로그인 여부
+        // ************************************************** 비번 재설정 이메일 전송 기능 추가
+        sendResetPassword: async ({ user, url }) => {
+            await sendEmail({
+                to: user.email,
+                subject: 'Reset your password',
+                text: `Click the link to reset your password: ${url}`,
+            });
+        },
+        resetPasswordTokenExpiresIn: 3600, // 비번 재설정 토큰 만료시간 설정 , 1시간 = 3600
     },
     accounts: {
         accountLinking: {
@@ -27,4 +38,5 @@ export const auth = betterAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         },
     },
+    plugins: [nextCookies()], //  미들웨어 사용을 위한 플러그인 추가
 });

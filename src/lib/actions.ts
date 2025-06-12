@@ -3,7 +3,7 @@
 import { auth } from './auth';
 import { APIError } from 'better-auth/api'; //  주석 제거
 import { redirect } from 'next/navigation';
-// import { prisma } from './prisma';
+import { db } from './prisma'; //  prisma 객체를 db 이름으로 가져옴
 
 //  State 변수 타입 선언
 interface State {
@@ -84,12 +84,14 @@ export async function signIn(prevState: State, formData: FormData) {
     }
     redirect('/dashboard'); // 로그인에 문제없이 성공했다면 대시보드 페이지로 이동
 }
-/*
+
+//  계정을 잊었을 경우 계정 찾는 로직 함수
 export async function searchAccount(email: string) {
-    const user = await prisma.user.findUnique({
+    // 넘겨 받은 이메일로 계정을 찾는 함수
+    const user = await db.user.findUnique({
         where: { email },
     });
 
-    return !!user;
+    // 찾은 사용자의 계정 정보 반환, 어떤 타입이든 값을 불타입으로 변경함
+    return !!user; // !!tiper@email.com --> tiper@email.com = true, !true = false = !false = true
 }
-*/
